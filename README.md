@@ -1,4 +1,4 @@
-Find a Rust UI (CLI) library and integrate the following functionalities:
+Use Ratatui (https://ratatui.rs/introduction/) library and integrate the following functionalities:
   - Add method to draw a main screen (for main menu and board)
   - Add method to draw a overlay/popup screen (for pause and victory screen)
   - Add method to save and load screen as json,binary,etc
