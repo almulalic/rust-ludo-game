@@ -6,7 +6,11 @@ use crossterm::{
     terminal::{self, EnterAlternateScreen, LeaveAlternateScreen},
 };
 
-use crate::screens::{main_menu::MainMenu, game_screen::{GameScreen, GameInitializationScreen, GameMainScreen}};
+use crate::screens::{ 
+    main_menu::MainMenu, 
+    game_screen::{ GameScreen, GameMainScreen },
+    game_initialization_screen::GameInitializationScreen
+};
 
 pub type CrosstermTerminal =
     ratatui::Terminal<ratatui::backend::CrosstermBackend<std::io::Stderr>>;

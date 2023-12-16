@@ -1,13 +1,13 @@
 use crate::entities::player::Player;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Default, Debug, Copy, Clone, PartialEq)]
 pub enum PawnColor {
+    #[default]
     RED,
     GREEN,
     BLUE,
     YELLOW
 }
-
 
 #[derive(Debug, Copy, Clone)]
 pub struct Pawn {

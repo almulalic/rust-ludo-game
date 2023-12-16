@@ -1,10 +1,11 @@
+use crate::app::CurrentScreen;
 use crate::{ app::App, tui::Tui };
-use crossterm::event::{ KeyCode };
+use crossterm::event::KeyCode;
 use ratatui::layout::Rect;
-use crate::{custom_widgets::button::{ Button, State, BLUE, RED, GREEN }, app::CurrentScreen, screens::main_menu};
-use crossterm::event::{ KeyEvent, MouseEvent, MouseButton, MouseEventKind };
+use crossterm::event::KeyEvent;
 use crate::entities::pawn::Pawn;
 use crate::entities::player::Player;
+use crate::screens::game_initialization_screen::{GameInitializationScreen, GameInitializationStep};
 
 #[derive(Debug, Copy, PartialEq, Clone)]
 pub enum GameState {
@@ -25,42 +26,11 @@ pub struct Game {
     pub fields: [ Option<Pawn>; 40 ],
 }
 
-pub struct GameInitializationScreen {
-    pub state: GameState
-}
-
-impl GameInitializationScreen {
-
-    pub fn new() -> GameInitializationScreen {
-        GameInitializationScreen {
-            state: GameState::RUNNING
-        }
-    }
-
-    pub fn handle_key_event(&mut self, key_event: KeyEvent, app: &mut App) {
-         match key_event.code {
-            KeyCode::Esc => {
-                if self.state == GameState::RUNNING {
-                    self.state = GameState::PAUSED;
-                } else {
-                    self.state = GameState::RUNNING;
-                }
-            },
-            _ => {}
-        }       
-    }
-
-    pub fn draw_ui(&mut self, tui: &mut Tui) {
-        tui.draw_game_initialization_screen(self)
-    }
-}
-
 pub struct GameMainScreen {
     pub state: GameState
 }
 
 impl GameMainScreen {
-
     pub fn new() -> GameMainScreen {
         GameMainScreen {
             state: GameState::RUNNING
@@ -85,17 +55,17 @@ impl GameMainScreen {
     }
 }
 
-pub struct GameScreen {
+pub struct GameScreen<'a> {
     pub board: [ [Rect; 11]; 11],
     pub should_quit: bool,
     pub previous_phase: GamePhase,
     pub phase: GamePhase,
-    pub game_initialization_screen: GameInitializationScreen,
+    pub game_initialization_screen: GameInitializationScreen<'a>,
     pub game_main_screen: GameMainScreen
 }
 
-impl GameScreen {
-    pub fn new() -> GameScreen {
+impl<'a> GameScreen<'a> {
+    pub fn new() -> GameScreen<'a> {
         GameScreen {
             should_quit: false,
             board: [[Rect { x: 0, y: 0, width: 0, height: 0 }; 11]; 11],
@@ -110,6 +80,7 @@ impl GameScreen {
         match key_event.code {
             KeyCode::Char('q') => { self.should_quit = true; app.should_quit = true },
             KeyCode::Char('w') => { self.phase = GamePhase::MAIN },
+            KeyCode::Char('m') => { self.should_quit = true; app.current_screen = CurrentScreen::MainMenu },
             _ => {
                match self.phase {
                     GamePhase::INITIALIZATION => self.game_initialization_screen.handle_key_event(key_event, app),

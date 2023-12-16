@@ -1,22 +1,13 @@
 use ratatui::{prelude::*, widgets::*};
 
-/// A custom widget that renders a button with a label, theme and state.
-#[derive(Debug, Clone)]
-pub struct Button<'a> {
-    pub label: Line<'a>,
-    pub action: String,
-    pub theme: Theme,
-    pub state: State,
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum State {
+pub enum ButtonState {
     Normal,
     Selected,
     Active,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Theme {
     text: Color,
     background: Color,
@@ -45,44 +36,79 @@ pub const GREEN: Theme = Theme {
     shadow: Color::Rgb(32, 96, 32),
 };
 
+pub const GRAY: Theme = Theme {
+    text: Color::Rgb(16, 48, 16),
+    background: Color::Rgb(160, 160, 160),
+    highlight: Color::Rgb(200, 200, 200),
+    shadow: Color::Rgb(160, 160, 160),
+};
+
+pub const YELLOW: Theme = Theme {
+    text: Color::Rgb(16, 48, 16),
+    background: Color::Rgb(255, 255, 0),
+    highlight: Color::Rgb(255, 255, 0),
+    shadow: Color::Rgb(160, 160, 160),
+};
+
+/// A custom widget that renders a button with a label, theme and state.
+#[derive(Debug, Clone, PartialEq)]
+    pub struct Button<'a, TValue: Default + Clone> {
+    pub label: Line<'a>,
+    pub value: TValue,
+    pub theme: Theme,
+    pub state: ButtonState,
+}
+
 /// A button with a label that can be themed.
-impl<'a> Button<'a> {
-    pub fn new<T: Into<Line<'a>>>(label: T) -> Button<'a> {
+impl<'a, TValue: Default + Clone> Button<'a, TValue> {
+    pub fn new<TLabel>(label: TLabel) -> Button<'a, TValue>
+    where
+        TLabel: Into<Line<'a>>,
+    {
         Button {
             label: label.into(),
             theme: BLUE,
-            action: String::new(),
-            state: State::Normal,
+            value: TValue::default(),
+            state: ButtonState::Normal,
         }
     }
 
-    pub fn action(mut self, action: String) -> Button<'a> {
-        self.action = action;
+    pub fn value(mut self, value: TValue) -> Button<'a, TValue> {
+        self.value = value;
         self
     }
     
-    pub fn theme(mut self, theme: Theme) -> Button<'a> {
+    pub fn theme(mut self, theme: Theme) -> Button<'a, TValue> {
         self.theme = theme;
         self
     }
 
-    pub fn state(mut self, state: State) -> Button<'a> {
+    pub fn state(mut self, state: ButtonState) -> Button<'a, TValue> {
         self.state = state;
         self
     }
 
-    pub fn set_state(&mut self, state: State) {
+    pub fn set_label(&mut self, label: String) {
+        self.label = label.into()
+    }
+
+    pub fn set_theme(&mut self, theme: Theme) {
+        self.theme = theme
+    }
+
+    pub fn set_state(&mut self, state: ButtonState) {
         self.state = state;
     }
 
-    pub fn get_action(mut self) -> String {
-        self.action.clone()
+    pub fn get_value(&mut self) -> TValue {
+        self.value.clone()
     }
 }
 
-impl<'a> Widget for Button<'a> {
+impl<'a, TValue: Default + Clone> Widget for Button<'a, TValue> {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let (background, text, shadow, highlight) = self.colors();
+         
         buf.set_style(
             area, 
             Style::new()
@@ -99,6 +125,7 @@ impl<'a> Widget for Button<'a> {
                 Style::new().fg(highlight).bg(background),
             );
         }
+        
         // render bottom line if there's enough space
         if area.height > 1 {
             buf.set_string(
@@ -108,6 +135,7 @@ impl<'a> Widget for Button<'a> {
                 Style::new().fg(shadow).bg(background),
             );
         }
+
         // render label centered
         buf.set_line(
             area.x + (area.width.saturating_sub(self.label.width() as u16)) / 2,
@@ -118,13 +146,13 @@ impl<'a> Widget for Button<'a> {
     }
 }
 
-impl Button<'_> {
+impl<'a, TValue: Default + Clone> Button<'a, TValue> {
     fn colors(&self) -> (Color, Color, Color, Color) {
         let theme = self.theme;
         match self.state {
-            State::Normal => (theme.background, theme.text, theme.shadow, theme.highlight),
-            State::Selected => (theme.highlight, theme.text, theme.shadow, theme.highlight),
-            State::Active => (theme.background, theme.text, theme.highlight, theme.shadow),
+            ButtonState::Normal => (theme.background, theme.text, theme.shadow, theme.highlight),
+            ButtonState::Selected => (theme.highlight, theme.text, theme.shadow, theme.highlight),
+            ButtonState::Active => (theme.background, theme.text, theme.highlight, theme.shadow),
         }
     }
 }

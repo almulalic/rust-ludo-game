@@ -16,7 +16,8 @@ impl App {
     pub fn new() -> App {
         App {
             should_quit: false,
-            current_screen: CurrentScreen::MainMenu
+            //current_screen: CurrentScreen::MainMenu
+            current_screen: CurrentScreen::GameScene
         }
     }
 

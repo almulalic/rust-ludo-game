@@ -1,6 +1,6 @@
 use crate::app::App;
 use crossterm::event::{ KeyCode };
-use crate::{custom_widgets::button::{ Button, State, BLUE, RED, GREEN }, app::CurrentScreen, screens::main_menu};
+use crate::{custom_widgets::button::{ Button, ButtonState, BLUE, RED, GREEN }, app::CurrentScreen, screens::main_menu};
 use crossterm::event::{ KeyEvent, MouseEvent, MouseButton, MouseEventKind };
 
 pub struct PauseMenu {

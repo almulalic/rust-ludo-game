@@ -38,7 +38,6 @@ fn main() -> Result<()> {
     let mut tui = Tui::new(terminal, events);
     tui.enter()?;
 
-
     let mut main_menu: Option<MainMenu> = None;
     let mut game_screen: Option<GameScreen> = None;
 
@@ -53,7 +52,7 @@ fn main() -> Result<()> {
                             match tui.events.next()? {
                                 Event::Tick => {}
                                 Event::Key(key_event) => mm.handle_key_event(key_event, &mut app),
-                                Event::Mouse(mouse_event) => mm.handle_mouse_event(mouse_event),
+                                Event::Mouse(_mouse_event) => {},
                                 _ => {}
                             }
                         }

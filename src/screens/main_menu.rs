@@ -1,10 +1,10 @@
-use crossterm::event::{ KeyCode };
-use crate::{custom_widgets::button::{ Button, State, BLUE, RED, GREEN }, app::CurrentScreen, screens::main_menu};
-use crossterm::event::{ KeyEvent, MouseEvent, MouseButton, MouseEventKind };
 use crate::app::App;
+use crossterm::event::KeyCode;
+use crossterm::event::{ KeyEvent, MouseEvent, MouseButton, MouseEventKind };
+use crate::{custom_widgets::button::{ Button, ButtonState, BLUE, RED, GREEN }, app::CurrentScreen };
 
 pub struct MainMenu<'a> {
-    pub buttons: [ Button<'a>; 3 ],
+    pub buttons: [ Button<'a, String>; 3 ],
     pub selected_button_id: usize,
     pub should_quit: bool
 }
@@ -13,16 +13,16 @@ impl<'a> MainMenu<'a> {
     pub fn new() -> MainMenu<'a> {
         MainMenu {
             buttons: [
-                Button::new("New Game").action(String::from("NEWGAME")).theme(GREEN).state(State::Selected),
-                Button::new("Load").action(String::from("LOAD")).theme(BLUE).state(State::Normal),
-                Button::new("Exit").action(String::from("EXIT")).theme(RED).state(State::Normal)
+                Button::new("New Game").value(String::from("NEWGAME")).theme(GREEN).state(ButtonState::Selected),
+                Button::new("Load").value(String::from("LOAD")).theme(BLUE).state(ButtonState::Normal),
+                Button::new("Exit").value(String::from("EXIT")).theme(RED).state(ButtonState::Normal)
             ],
             selected_button_id: 0,
             should_quit: false
         }
     }
 
-    pub fn get_button(&self, index: usize) -> Option<Button> {
+    pub fn get_button(&self, index: usize) -> Option<Button<String>> {
         self.buttons.get(index).cloned()
     }
 
@@ -40,7 +40,7 @@ impl<'a> MainMenu<'a> {
         if let Some(selected_button) = self.buttons.get_mut(self.selected_button_id) {
             self.should_quit = true;
 
-            match selected_button.action.as_str() {
+            match selected_button.value.as_str() {
                 "NEWGAME" => app.current_screen = CurrentScreen::GameScene,
                 "LOAD" => app.current_screen = CurrentScreen::GameScene,
                 "EXIT" => app.should_quit = true,
@@ -51,31 +51,14 @@ impl<'a> MainMenu<'a> {
 
     fn change_selected_button(&mut self, new_button_id: usize) {
         if let Some(old_button) = self.buttons.get_mut(self.selected_button_id) {
-            old_button.set_state(State::Normal);
+            old_button.set_state(ButtonState::Normal);
         }
 
         if let Some(new_button) = self.buttons.get_mut(new_button_id) {
-            new_button.set_state(State::Selected);
+            new_button.set_state(ButtonState::Selected);
             self.selected_button_id = new_button_id;
         }
     }
 
-    pub fn handle_mouse_event(&mut self, mouse_event: MouseEvent) {
-        match mouse_event.kind {
-            MouseEventKind::Moved => {
-                let old_selected_button = self.buttons.get(self.selected_button_id);
-
-                self.selected_button_id = match mouse_event.column {
-                    x if x < 15 => 0,
-                    x if x < 30 => 1,
-                    _ => 2,
-                };
-            }
-
-            MouseEventKind::Down(MouseButton::Left) => {
-            }
-            _ => (),
-        }
-    }
 }
 
