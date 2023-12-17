@@ -1,11 +1,11 @@
-use crate::app::CurrentScreen;
-use crate::{ app::App, tui::Tui };
-use crossterm::event::KeyCode;
 use ratatui::layout::Rect;
+use crate::app::CurrentScreen;
+use crossterm::event::KeyCode;
 use crossterm::event::KeyEvent;
 use crate::entities::pawn::Pawn;
+use crate::{ app::App, tui::Tui };
 use crate::entities::player::Player;
-use crate::screens::game_initialization_screen::{GameInitializationScreen, GameInitializationStep};
+use crate::screens::game_initialization_screen::screen::{ GameInitializationScreen };
 
 #[derive(Debug, Copy, PartialEq, Clone)]
 pub enum GameState {

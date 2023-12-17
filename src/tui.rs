@@ -9,7 +9,7 @@ use crossterm::{
 use crate::screens::{ 
     main_menu::MainMenu, 
     game_screen::{ GameScreen, GameMainScreen },
-    game_initialization_screen::GameInitializationScreen
+    game_initialization_screen::screen::GameInitializationScreen
 };
 
 pub type CrosstermTerminal =

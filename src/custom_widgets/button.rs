@@ -45,8 +45,8 @@ pub const GRAY: Theme = Theme {
 
 pub const YELLOW: Theme = Theme {
     text: Color::Rgb(16, 48, 16),
-    background: Color::Rgb(255, 255, 0),
-    highlight: Color::Rgb(255, 255, 0),
+    background: Color::Rgb(192, 192, 0),
+    highlight: Color::Rgb(250, 250, 0),
     shadow: Color::Rgb(160, 160, 160),
 };
 

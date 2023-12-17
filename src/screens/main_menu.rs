@@ -1,10 +1,10 @@
 use crate::app::App;
 use crossterm::event::KeyCode;
-use crossterm::event::{ KeyEvent, MouseEvent, MouseButton, MouseEventKind };
+use crossterm::event::{ KeyEvent };
 use crate::{custom_widgets::button::{ Button, ButtonState, BLUE, RED, GREEN }, app::CurrentScreen };
 
 pub struct MainMenu<'a> {
-    pub buttons: [ Button<'a, String>; 3 ],
+    pub buttons: Vec<Button<'a, String>>,
     pub selected_button_id: usize,
     pub should_quit: bool
 }
@@ -12,7 +12,7 @@ pub struct MainMenu<'a> {
 impl<'a> MainMenu<'a> {
     pub fn new() -> MainMenu<'a> {
         MainMenu {
-            buttons: [
+            buttons: vec![
                 Button::new("New Game").value(String::from("NEWGAME")).theme(GREEN).state(ButtonState::Selected),
                 Button::new("Load").value(String::from("LOAD")).theme(BLUE).state(ButtonState::Normal),
                 Button::new("Exit").value(String::from("EXIT")).theme(RED).state(ButtonState::Normal)

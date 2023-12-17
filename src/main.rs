@@ -19,6 +19,8 @@ pub mod screens;
 
 pub mod entities;
 
+pub mod utils;
+
 use app::{App, CurrentScreen};
 use tui::Tui;
 use color_eyre::Result;

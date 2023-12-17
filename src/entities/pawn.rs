@@ -1,6 +1,6 @@
 use crate::entities::player::Player;
 
-#[derive(Default, Debug, Copy, Clone, PartialEq)]
+#[derive(Default, Debug, Copy, Clone, Eq, Hash, PartialEq, Ord, PartialOrd)]
 pub enum PawnColor {
     #[default]
     RED,
