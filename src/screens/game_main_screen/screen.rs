@@ -1,8 +1,10 @@
+use crate::entities::pawn::Pawn;
+use crate::entities::pawn::PawnColor;
+use crate::entities::player::Player;
 use crate::tui::Tui;
 use crate::utils::roll_dice;
 use crossterm::event::KeyCode;
 use crossterm::event::KeyEvent;
-use ratatui::prelude::Rect;
 
 #[derive(Debug, Copy, PartialEq, Clone)]
 pub enum GameState {
@@ -15,10 +17,9 @@ pub struct GameMainScreen {
     pub current_player_id: usize, // pokazuje na igraca koji trenutni igr
     pub current_player_roll: Option<usize>, // broj koji je trenutni igrac bacio (bacanje od
     // current_player_id)
-    pub board: [[Rect; 11]; 11], // UI ploca koja ce prikazati 11x11 matricu polja (neka sakrivena, neka
-    // kucice) od kojih ce 40 biti mapirano iz niza Game.fields
     pub is_game_finished: bool, // indikator da li je igra zavrsena kako bi se mogao pokazati end
-                                // screen
+    // screen
+    pub fields: [Option<Pawn>; 40], // 40 polja gdje svaki moze biti ili None ili Pawn
 }
 
 // Klasa koja enkapsulira logiku od momenta kad igra pocne do momenta kad igra zavrsi
@@ -29,12 +30,7 @@ impl GameMainScreen {
             current_player_id: 0,
             current_player_roll: None,
             is_game_finished: false,
-            board: [[Rect {
-                x: 0,
-                y: 0,
-                width: 3,
-                height: 3,
-            }; 11]; 11],
+            fields: [None; 40],
         }
     }
 
@@ -61,7 +57,15 @@ impl GameMainScreen {
                 // dobar potez, povecaj current_player_id za 1 ili daj igracu ponovo da baca ako je
                 // dobio 6
                 //
-                self.current_player_id += 1;
+                //
+
+                // Dodano kao demo da vidis kako se ispisuje, svaki put kad kliknes doda se jedan
+                // pijun pored crvene boje, polja se popunjavaju od srednjeg gornjeg polja u smjeru kazaljke na
+                // satu (0 => 40)
+                self.fields[self.current_player_id] =
+                    Some(Pawn::new(Player::new(PawnColor::RED), PawnColor::RED));
+
+                self.current_player_id = self.current_player_id + 1 % 4;
                 self.current_player_roll = None;
             }
             KeyCode::Char(' ') => {

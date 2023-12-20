@@ -1,16 +1,17 @@
-use std::{collections::BTreeMap, rc::Rc};
-
+use crate::screens::{
+    game_initialization_screen::player_order_state::RollState,
+    game_main_screen::screen::{GameMainScreen, GameState},
+    main_menu::MainMenu,
+};
 use ratatui::{
     layout::{Constraint, Direction, Layout, Rect},
     prelude::{Alignment, Frame},
     style::{Color, Style, Stylize},
     widgets::{Block, BorderType, Borders, Clear, Padding, Paragraph},
 };
-
-use crate::screens::{
-    game_initialization_screen::player_order_state::RollState,
-    game_main_screen::screen::{GameMainScreen, GameState},
-    main_menu::MainMenu,
+use std::{
+    collections::{BTreeMap, HashMap},
+    rc::Rc,
 };
 
 use crate::screens::game_initialization_screen::screen::{
@@ -352,8 +353,54 @@ fn get_columns(row: Rect) -> Rc<[Rect]> {
         .split(row)
 }
 
+fn get_path() -> HashMap<(usize, usize), usize> {
+    return maplit::hashmap! {
+    (0, 6) => 0,
+    (0, 8) => 1,
+    (1, 8) => 2,
+    (2, 8) => 3,
+    (3, 8) => 4,
+    (4, 8) => 5,
+    (4, 9) => 6,
+    (4, 10) => 7,
+    (4, 11) => 8,
+    (4, 12) => 9,
+    (6, 12) => 10,
+    (8, 12) => 11,
+    (8, 11) => 12,
+    (8, 10) => 13,
+    (8, 9) => 14,
+    (8, 8) => 15,
+    (9, 8) => 16,
+    (10, 8) => 17,
+    (11, 8) => 18,
+    (12, 8) => 19,
+    (12, 6) => 20,
+    (12, 4) => 21,
+    (11, 4) => 22,
+    (10, 4) => 23,
+    (9, 4) => 24,
+    (8, 4) => 25,
+    (8, 3) => 26,
+    (8, 2) => 27,
+    (8, 1) => 28,
+    (8, 0) => 29,
+    (6, 0) => 30,
+    (4, 0) => 31,
+    (4, 1) => 32,
+    (4, 2) => 33,
+    (4, 3) => 34,
+    (4, 4) => 35,
+    (3, 4) => 36,
+    (2, 4) => 37,
+    (1, 4) => 38,
+    (0, 4) => 39,
+    };
+}
+
 pub fn render_game_main_screen(gms: &mut GameMainScreen, frame: &mut Frame) {
     let rows = get_rows(frame);
+    let path = get_path();
 
     for (i, row) in rows.iter().enumerate() {
         let columns = get_columns(*row);
@@ -361,11 +408,20 @@ pub fn render_game_main_screen(gms: &mut GameMainScreen, frame: &mut Frame) {
         for (j, column) in columns.iter().enumerate() {
             let board_id = BOARD[i][j];
 
-            if board_id >= 1 {
-                frame.render_widget(
-                    colorize_field(&Paragraph::new(" ████ \n██  ██\n ████ "), board_id),
-                    *column,
-                );
+            let raw_field = &Paragraph::new(" ████ \n██  ██\n ████ ");
+
+            if board_id == 1 {
+                if let Some(path_id) = path.get(&(i, j)) {
+                    if let Some(Some(pawn)) = gms.fields.get_mut(*path_id) {
+                        frame.render_widget(raw_field.clone().fg(pawn.get_rgb_color()), *column)
+                    } else {
+                        frame.render_widget(colorize_field(raw_field, 1), *column);
+                    }
+                } else {
+                    frame.render_widget(colorize_field(raw_field, 1), *column);
+                }
+            } else if board_id > 1 {
+                frame.render_widget(colorize_field(raw_field, board_id), *column);
             }
         }
     }

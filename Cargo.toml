@@ -9,6 +9,7 @@ edition = "2021"
 color-eyre = "0.6.2"
 crossterm = "0.27.0"
 lazy_static = "1.4.0"
+maplit = "1.0.2"
 rand = "0.8.5"
 ratatui = "0.24.0"
 
