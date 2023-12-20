@@ -3,7 +3,7 @@ pub enum CurrentScreen {
     #[default]
     MainMenu,
     GameScene,
-    EndScreen
+    EndScreen,
 }
 
 #[derive(Debug, Default)]
@@ -17,7 +17,7 @@ impl App {
         App {
             should_quit: false,
             //current_screen: CurrentScreen::MainMenu
-            current_screen: CurrentScreen::GameScene
+            current_screen: CurrentScreen::GameScene,
         }
     }
 

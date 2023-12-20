@@ -6,16 +6,14 @@ use crossterm::{
     terminal::{self, EnterAlternateScreen, LeaveAlternateScreen},
 };
 
-use crate::screens::{ 
-    main_menu::MainMenu, 
-    game_screen::{ GameScreen, GameMainScreen },
-    game_initialization_screen::screen::GameInitializationScreen
+use crate::screens::{
+    game_initialization_screen::screen::GameInitializationScreen,
+    game_main_screen::screen::GameMainScreen, main_menu::MainMenu,
 };
 
-pub type CrosstermTerminal =
-    ratatui::Terminal<ratatui::backend::CrosstermBackend<std::io::Stderr>>;
+pub type CrosstermTerminal = ratatui::Terminal<ratatui::backend::CrosstermBackend<std::io::Stderr>>;
 
-use crate::{app::App, event::EventHandler, ui};
+use crate::{event::EventHandler, ui};
 
 /// Representation of a terminal user interface.
 ///
@@ -39,11 +37,7 @@ impl Tui {
     /// It enables the raw mode and sets terminal properties.
     pub fn enter(&mut self) -> Result<()> {
         terminal::enable_raw_mode()?;
-        crossterm::execute!(
-            io::stderr(),
-            EnterAlternateScreen,
-            EnableMouseCapture
-        )?;
+        crossterm::execute!(io::stderr(), EnterAlternateScreen, EnableMouseCapture)?;
 
         // Define a custom panic hook to reset the terminal properties.
         // This way, you won't have your terminal messed up if an unexpected error happens.
@@ -59,16 +53,26 @@ impl Tui {
     }
 
     pub fn draw_main_menu(&mut self, main_menu: &mut MainMenu) -> Result<()> {
-        self.terminal.draw(|frame| ui::render_main_menu(main_menu, frame))?;
+        self.terminal
+            .draw(|frame| ui::render_main_menu(main_menu, frame))?;
         Ok(())
     }
 
-    pub fn draw_game_initialization_screen(&mut self, game_initialization_screen: &mut GameInitializationScreen) {
-        self.terminal.draw(|frame| ui::render_game_initialization_screen(game_initialization_screen, frame));
+    pub fn draw_game_initialization_screen(
+        &mut self,
+        game_initialization_screen: &mut GameInitializationScreen,
+    ) -> Result<()> {
+        let _ = self
+            .terminal
+            .draw(|frame| ui::render_game_initialization_screen(game_initialization_screen, frame));
+        Ok(())
     }
-    
-    pub fn draw_game_main_screen(&mut self, game_main_screen: &mut GameMainScreen) {
-        self.terminal.draw(|frame| ui::render_game_main_screen(game_main_screen, frame));
+
+    pub fn draw_game_main_screen(&mut self, game_main_screen: &mut GameMainScreen) -> Result<()> {
+        let _ = self
+            .terminal
+            .draw(|frame| ui::render_game_main_screen(game_main_screen, frame));
+        Ok(())
     }
 
     /// Resets the terminal interface.
@@ -77,11 +81,7 @@ impl Tui {
     /// the terminal properties if unexpected errors occur.
     fn reset() -> Result<()> {
         terminal::disable_raw_mode()?;
-        crossterm::execute!(
-            io::stderr(),
-            LeaveAlternateScreen,
-            DisableMouseCapture
-        )?;
+        crossterm::execute!(io::stderr(), LeaveAlternateScreen, DisableMouseCapture)?;
         Ok(())
     }
 

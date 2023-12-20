@@ -1,22 +1,23 @@
 use crate::app::App;
-use crossterm::event::{ KeyCode };
-use crate::{custom_widgets::button::{ Button, ButtonState, BLUE, RED, GREEN }, app::CurrentScreen, screens::main_menu};
-use crossterm::event::{ KeyEvent, MouseEvent, MouseButton, MouseEventKind };
+use crate::app::CurrentScreen;
+use crossterm::event::KeyCode;
+use crossterm::event::KeyEvent;
 
 pub struct PauseMenu {
-    pub should_quit: bool
+    pub should_quit: bool,
 }
 
 impl PauseMenu {
     pub fn new() -> PauseMenu {
-        PauseMenu {
-            should_quit: false
-        }
+        PauseMenu { should_quit: false }
     }
 
     pub fn handle_key_event(&mut self, key_event: KeyEvent, app: &mut App) {
         match key_event.code {
-            KeyCode::Char('q') => { self.should_quit = true; app.should_quit = true },
+            KeyCode::Char('q') => {
+                self.should_quit = true;
+                app.should_quit = true
+            }
             KeyCode::Esc => {
                 if app.current_screen == CurrentScreen::GameScene {
                     self.should_quit = true;
@@ -31,8 +32,4 @@ impl PauseMenu {
             _ => {}
         }
     }
-
-    fn handle_enter_press(&mut self, app: &mut App) {}
 }
-
-

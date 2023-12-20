@@ -1,4 +1,4 @@
-use crate::custom_widgets::button::{ Button, ButtonState, GREEN, YELLOW };
+use crate::custom_widgets::button::{Button, ButtonState, MATRIX_GREEN};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct PlayerCountState<'a> {
@@ -13,10 +13,19 @@ impl<'a> PlayerCountState<'a> {
             curr_id: 0,
             selected_player_count: 0,
             options: vec![
-                Button::new("2").value(2).theme(GREEN).state(ButtonState::Active),
-                Button::new("3").value(3).theme(YELLOW).state(ButtonState::Active),
-                Button::new("4").value(4).theme(YELLOW).state(ButtonState::Active),
-            ]
+                Button::new("2")
+                    .value(2)
+                    .theme(MATRIX_GREEN)
+                    .state(ButtonState::Selected),
+                Button::new("3")
+                    .value(3)
+                    .theme(MATRIX_GREEN)
+                    .state(ButtonState::Normal),
+                Button::new("4")
+                    .value(4)
+                    .theme(MATRIX_GREEN)
+                    .state(ButtonState::Normal),
+            ],
         }
     }
- }
+}
