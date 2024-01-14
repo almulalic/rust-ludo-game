@@ -21,7 +21,7 @@ pub struct GameInitializationScreen<'a> {
     pub state: GameState,
     pub players: Vec<Player>,
     pub step: GameInitializationStep,
-    pub count_state: PlayerCountState<'a>,
+    pub player_count_state: PlayerCountState<'a>,
     pub player_order_state: PlayerOrderState,
     pub pawn_color_state: PlayerPawnColorState<'a>,
     pub is_game_initialized: bool,
@@ -33,11 +33,15 @@ impl<'a> GameInitializationScreen<'a> {
             state: GameState::RUNNING,
             players: Vec::new(),
             step: GameInitializationStep::PlayerNumberSelection,
-            count_state: PlayerCountState::new(),
+            player_count_state: PlayerCountState::new(),
             pawn_color_state: PlayerPawnColorState::new(),
             player_order_state: PlayerOrderState::new(),
             is_game_initialized: false,
         }
+    }
+
+    pub fn get_players(&mut self) -> &Vec<Player> {
+        return &self.players;
     }
 
     pub fn handle_key_event(&mut self, key_event: KeyEvent) {
@@ -52,8 +56,8 @@ impl<'a> GameInitializationScreen<'a> {
             KeyCode::Left => match self.step {
                 GameInitializationStep::PlayerNumberSelection => {
                     self.handle_player_count_select_change(previous_with_wrap(
-                        self.count_state.curr_id,
-                        &self.count_state.options,
+                        self.player_count_state.curr_id,
+                        &self.player_count_state.options,
                     ));
                 }
                 GameInitializationStep::PlayerPawnColorSelection => {
@@ -71,7 +75,8 @@ impl<'a> GameInitializationScreen<'a> {
             KeyCode::Right => match self.step {
                 GameInitializationStep::PlayerNumberSelection => self
                     .handle_player_count_select_change(
-                        (self.count_state.curr_id + 1) % self.count_state.options.len(),
+                        (self.player_count_state.curr_id + 1)
+                            % self.player_count_state.options.len(),
                     ),
                 GameInitializationStep::PlayerPawnColorSelection => {
                     let next = self.find_first_available_button::<Button<'a, PawnColor>>(
@@ -87,11 +92,14 @@ impl<'a> GameInitializationScreen<'a> {
             },
             KeyCode::Enter => match self.step {
                 GameInitializationStep::PlayerNumberSelection => {
-                    if let Some(button) = self.count_state.options.get_mut(self.count_state.curr_id)
+                    if let Some(button) = self
+                        .player_count_state
+                        .options
+                        .get_mut(self.player_count_state.curr_id)
                     {
                         button.set_state(ButtonState::Active);
 
-                        self.count_state.selected_player_count = button.value;
+                        self.player_count_state.selected_player_count = button.value;
                         self.step = GameInitializationStep::PlayerPawnColorSelection;
                     }
                 }
@@ -120,23 +128,29 @@ impl<'a> GameInitializationScreen<'a> {
                     self.handle_player_order_roll();
                 }
             }
-            KeyCode::Backspace => match self.step {
-                GameInitializationStep::PlayerPawnColorSelection => {
-                    if let Ok("GO_BACK") = self.handle_player_pawn_color_revert() {
-                        self.step = GameInitializationStep::PlayerNumberSelection;
-                        self.pawn_color_state.reset_options();
-                        self.players = Vec::new();
-                    }
+            KeyCode::Backspace => {
+                if self.step == GameInitializationStep::PlayerPawnColorSelection {
+                    self.players = Vec::new();
+                    self.pawn_color_state = PlayerPawnColorState::new();
+                    self.player_count_state = PlayerCountState::new();
+
+                    self.step = GameInitializationStep::PlayerNumberSelection;
                 }
-                GameInitializationStep::PlayerOrderSelection => {
-                    self.step = GameInitializationStep::PlayerPawnColorSelection;
+
+                if self.step == GameInitializationStep::PlayerOrderSelection {
                     self.player_order_state = PlayerOrderState::new();
+                    self.pawn_color_state = PlayerPawnColorState::new();
+                    self.players = Vec::new();
+
+                    self.step = GameInitializationStep::PlayerPawnColorSelection;
                 }
-                GameInitializationStep::Confirmation => {
+
+                if self.step == GameInitializationStep::Confirmation {
+                    self.player_order_state = PlayerOrderState::new();
+
                     self.step = GameInitializationStep::PlayerOrderSelection;
                 }
-                _ => {}
-            },
+            }
             _ => {}
         }
     }
@@ -165,13 +179,17 @@ impl<'a> GameInitializationScreen<'a> {
     }
 
     fn handle_player_count_select_change(&mut self, new_button_id: usize) {
-        if let Some(old_button) = self.count_state.options.get_mut(self.count_state.curr_id) {
+        if let Some(old_button) = self
+            .player_count_state
+            .options
+            .get_mut(self.player_count_state.curr_id)
+        {
             old_button.set_state(ButtonState::Normal);
         }
 
-        if let Some(new_button) = self.count_state.options.get_mut(new_button_id) {
+        if let Some(new_button) = self.player_count_state.options.get_mut(new_button_id) {
             new_button.set_state(ButtonState::Selected);
-            self.count_state.curr_id = new_button_id;
+            self.player_count_state.curr_id = new_button_id;
         }
     }
 
@@ -200,7 +218,8 @@ impl<'a> GameInitializationScreen<'a> {
         {
             if !self.pawn_color_state.taken.contains(&selected_button.value) {
                 self.pawn_color_state.taken.push(selected_button.value);
-                self.players.push(Player::new(selected_button.value));
+                self.players
+                    .push(Player::new(self.players.len(), 0, selected_button.value));
 
                 selected_button.set_state(ButtonState::Active);
                 selected_button.set_label(format!(
@@ -212,12 +231,15 @@ impl<'a> GameInitializationScreen<'a> {
                     self.pawn_color_state.curr_player_id += 1;
                 }
 
-                if self.pawn_color_state.label < self.count_state.selected_player_count {
+                if self.pawn_color_state.label < self.player_count_state.selected_player_count {
                     self.pawn_color_state.label += 1;
                 }
             }
 
-            if self.pawn_color_state.taken.len() == self.count_state.selected_player_count {
+            if self.pawn_color_state.taken.len() > 0
+                && self.pawn_color_state.taken.len()
+                    == self.player_count_state.selected_player_count
+            {
                 return Ok("");
             }
 
@@ -227,42 +249,12 @@ impl<'a> GameInitializationScreen<'a> {
         }
     }
 
-    pub fn handle_player_pawn_color_revert(&mut self) -> Result<&'static str, &'static str> {
-        if self.pawn_color_state.taken.len() == 0 {
-            return Ok("GO_BACK");
-        }
-
-        if let Some(button) = self
-            .pawn_color_state
-            .options
-            .get_mut(self.pawn_color_state.curr_id)
-        {
-            if self.pawn_color_state.taken.contains(&button.value) {
-                self.pawn_color_state
-                    .taken
-                    .retain(|&pawn_color| pawn_color != button.value);
-                self.players
-                    .retain(|&player| player.pawn_color == button.value);
-
-                button.set_state(ButtonState::Normal);
-
-                self.pawn_color_state.curr_player_id -= 1;
-
-                if self.pawn_color_state.label > 1 {
-                    self.pawn_color_state.label -= 1;
-                }
-            }
-
-            return Ok("REVERTED");
-        }
-
-        return Err("BUTTON_NOT_VALID");
-    }
-
     fn handle_player_order_roll(&mut self) {
         match self.player_order_state.roll_state {
             RollState::Initial => {
-                if self.player_order_state.curr_id <= self.count_state.selected_player_count - 1 {
+                if self.player_order_state.curr_id
+                    <= self.player_count_state.selected_player_count - 1
+                {
                     self.player_order_state.rolled_numbers.insert(
                         self.player_order_state.curr_id,
                         roll_dice().try_into().unwrap(),
@@ -270,7 +262,8 @@ impl<'a> GameInitializationScreen<'a> {
                     self.player_order_state.curr_id += 1;
                 }
 
-                if self.player_order_state.curr_id == self.count_state.selected_player_count {
+                if self.player_order_state.curr_id == self.player_count_state.selected_player_count
+                {
                     if has_duplicate_values(&self.player_order_state.rolled_numbers) {
                         self.player_order_state.roll_state = RollState::Rethrow;
                     } else {
@@ -286,7 +279,9 @@ impl<'a> GameInitializationScreen<'a> {
     }
 
     fn handle_rethrow(&mut self, retry: usize) {
-        if retry > 0 || self.player_order_state.curr_id == self.count_state.selected_player_count {
+        if retry > 0
+            || self.player_order_state.curr_id == self.player_count_state.selected_player_count
+        {
             self.setup_rethrow();
             return;
         }
@@ -307,8 +302,6 @@ impl<'a> GameInitializationScreen<'a> {
                 self.step = GameInitializationStep::Confirmation;
             }
         }
-
-        print!("    ");
     }
 
     fn setup_rethrow(&mut self) {

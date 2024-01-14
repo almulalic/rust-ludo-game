@@ -7,8 +7,11 @@ use crossterm::{
 };
 
 use crate::screens::{
-    game_initialization_screen::screen::GameInitializationScreen,
-    game_main_screen::screen::GameMainScreen, main_menu::MainMenu,
+    game_initialization_screen::{
+        screen::GameInitializationScreen, ui::render_game_initialization_screen,
+    },
+    game_main_screen::screen::GameMainScreen,
+    main_menu::MainMenu,
 };
 
 pub type CrosstermTerminal = ratatui::Terminal<ratatui::backend::CrosstermBackend<std::io::Stderr>>;
@@ -64,7 +67,7 @@ impl Tui {
     ) -> Result<()> {
         let _ = self
             .terminal
-            .draw(|frame| ui::render_game_initialization_screen(game_initialization_screen, frame));
+            .draw(|frame| render_game_initialization_screen(game_initialization_screen, frame));
         Ok(())
     }
 

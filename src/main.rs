@@ -2,6 +2,7 @@ pub mod app;
 pub mod custom_widgets;
 pub mod entities;
 pub mod event;
+pub mod macros;
 pub mod screens;
 pub mod tui;
 pub mod ui;
@@ -11,13 +12,13 @@ use app::{App, CurrentScreen};
 use color_eyre::Result;
 use event::{Event, EventHandler};
 use ratatui::{backend::CrosstermBackend, Terminal};
-use tui::Tui;
-
 use screens::game_screen::GameScreen;
 use screens::main_menu::MainMenu;
+use tui::Tui;
 
 fn main() -> Result<()> {
     let mut app = App::new();
+    prepare_debug_log!();
 
     let backend = CrosstermBackend::new(std::io::stderr());
     let terminal = Terminal::new(backend)?;
