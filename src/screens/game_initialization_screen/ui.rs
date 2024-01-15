@@ -7,14 +7,14 @@ use ratatui::{
     widgets::{Block, BorderType, Borders, Padding, Paragraph},
 };
 
-use crate::ui::{centered_rect, render_pause_menu};
+use crate::ui::centered_rect;
 
 use super::{
     player_order_state::RollState,
     screen::{GameInitializationScreen, GameInitializationStep},
 };
 
-const MAIN_COLOR: Color = Color::Rgb(0, 255, 6);
+pub const MAIN_COLOR: Color = Color::Rgb(0, 255, 6);
 
 fn get_border(borders: Borders) -> Block<'static> {
     return Block::default()
@@ -55,8 +55,6 @@ pub fn render_game_initialization_screen(gis: &mut GameInitializationScreen, fra
     if gis.step >= GameInitializationStep::Confirmation {
         render_game_initialization_confirmation(gis, main_layout[5], frame);
     }
-
-    render_pause_menu(gis.state, frame);
 }
 
 fn render_heading(layout: Rect, frame: &mut Frame) {

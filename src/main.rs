@@ -1,4 +1,5 @@
 pub mod app;
+pub mod constants;
 pub mod custom_widgets;
 pub mod entities;
 pub mod event;

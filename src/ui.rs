@@ -1,17 +1,19 @@
 use crate::{
-    entities::field::{Field, FieldKind},
-    screens::{
-        game_main_screen::screen::{GameMainScreen, GameState},
-        main_menu::MainMenu,
+    entities::{
+        field::{Field, FieldKind},
+        pawn::PawnColor,
     },
+    screens::{game_main_screen::screen::GameMainScreen, main_menu::MainMenu},
 };
 use ratatui::{
     layout::{Constraint, Direction, Layout, Rect},
     prelude::{Alignment, Frame},
     style::{Color, Style, Stylize},
-    widgets::{Block, Borders, Clear, Paragraph},
+    widgets::{Block, Borders, Paragraph},
 };
 use std::rc::Rc;
+
+const MAIN_COLOR: Color = Color::Rgb(0, 255, 6);
 
 pub fn render_main_menu(main_menu: &mut MainMenu, frame: &mut Frame) {
     let area = centered_rect(20, 50, frame.size());
@@ -81,6 +83,10 @@ fn get_columns(row: Rect) -> Rc<[Rect]> {
         .split(row)
 }
 
+pub fn get_field(middle: &str) -> String {
+    format!("  ███\n██{}██\n  ███", middle)
+}
+
 pub fn render_game_main_screen(gms: &mut GameMainScreen, frame: &mut Frame) {
     let area = centered_rect(60, 100, frame.size());
 
@@ -107,7 +113,8 @@ pub fn render_game_main_screen(gms: &mut GameMainScreen, frame: &mut Frame) {
         Block::default()
             .title("Game State")
             .title_alignment(Alignment::Center)
-            .borders(Borders::ALL),
+            .borders(Borders::ALL)
+            .style(Style::default().fg(MAIN_COLOR)),
     )
     .alignment(Alignment::Center);
 
@@ -119,17 +126,19 @@ pub fn render_game_main_screen(gms: &mut GameMainScreen, frame: &mut Frame) {
         let columns = get_columns(*row);
 
         for (j, column) in columns.iter().enumerate() {
-            let empty_field = &Paragraph::new(" ████ \n██   ██\n ████ ");
+            let empty_field = &Paragraph::new(get_field("███"));
+
             let field: Field = gms.board[i][j];
 
             if !field.is_visible {
                 continue;
             }
-
             if let Some(mut pawn) = field.pawn {
                 match field.kind {
                     FieldKind::Gap => {}
-                    _ => frame.render_widget(pawn.render(&field), *column),
+                    _ => {
+                        frame.render_widget(pawn.render(&field), *column);
+                    }
                 }
             } else {
                 match field.kind {
@@ -142,39 +151,54 @@ pub fn render_game_main_screen(gms: &mut GameMainScreen, frame: &mut Frame) {
                     }
                     FieldKind::RedHome | FieldKind::RedStart | FieldKind::RedSafehouse => frame
                         .render_widget(
-                            empty_field.clone().fg(if field.is_hovered {
-                                Color::Rgb(139, 0, 0)
-                            } else {
-                                Color::Red
-                            }),
+                            empty_field.clone().fg(
+                                if field.is_hovered || !gms.playing_colors.contains(&PawnColor::RED)
+                                {
+                                    Color::Rgb(139, 0, 0)
+                                } else {
+                                    Color::Red
+                                },
+                            ),
                             *column,
                         ),
                     FieldKind::GreenHome | FieldKind::GreenStart | FieldKind::GreenSafehouse => {
                         frame.render_widget(
-                            empty_field.clone().fg(if field.is_hovered {
-                                Color::Rgb(1, 50, 32)
-                            } else {
-                                Color::Green
-                            }),
+                            empty_field.clone().fg(
+                                if field.is_hovered
+                                    || !gms.playing_colors.contains(&PawnColor::GREEN)
+                                {
+                                    Color::Rgb(1, 50, 32)
+                                } else {
+                                    Color::Green
+                                },
+                            ),
                             *column,
                         )
                     }
                     FieldKind::BlueHome | FieldKind::BlueStart | FieldKind::BlueSafehouse => frame
                         .render_widget(
-                            empty_field.clone().fg(if field.is_hovered {
-                                Color::Rgb(0, 0, 139)
-                            } else {
-                                Color::Blue
-                            }),
+                            empty_field.clone().fg(
+                                if field.is_hovered
+                                    || !gms.playing_colors.contains(&PawnColor::BLUE)
+                                {
+                                    Color::Rgb(0, 0, 139)
+                                } else {
+                                    Color::Blue
+                                },
+                            ),
                             *column,
                         ),
                     FieldKind::YellowHome | FieldKind::YellowStart | FieldKind::YellowSafehouse => {
                         frame.render_widget(
-                            empty_field.clone().fg(if field.is_hovered {
-                                Color::Rgb(246, 190, 0)
-                            } else {
-                                Color::Yellow
-                            }),
+                            empty_field.clone().fg(
+                                if field.is_hovered
+                                    || !gms.playing_colors.contains(&PawnColor::YELLOW)
+                                {
+                                    Color::Rgb(246, 190, 0)
+                                } else {
+                                    Color::Yellow
+                                },
+                            ),
                             *column,
                         )
                     }
@@ -183,23 +207,6 @@ pub fn render_game_main_screen(gms: &mut GameMainScreen, frame: &mut Frame) {
                 }
             }
         }
-    }
-
-    render_pause_menu(gms.state, frame)
-}
-
-pub fn render_pause_menu(game_state: GameState, frame: &mut Frame) {
-    if game_state == GameState::PAUSED {
-        let area = centered_rect(60, 20, frame.size());
-
-        frame.render_widget(Clear, area);
-        frame.render_widget(
-            Block::default()
-                .title("Pause Menu")
-                .borders(Borders::ALL)
-                .style(Style::new().bg(Color::Black)),
-            area,
-        );
     }
 }
 

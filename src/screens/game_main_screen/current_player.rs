@@ -1,10 +1,12 @@
 use core::fmt;
 
+use serde::{Deserialize, Serialize};
+
 use crate::{debug_log, entities::player::Player};
 
 use super::screen::PlayerAction;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct CurrentPlayer {
     pub id: usize,
     pub player_action: PlayerAction,

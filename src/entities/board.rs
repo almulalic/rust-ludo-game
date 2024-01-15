@@ -1,7 +1,7 @@
 use crate::debug_log;
 
 use super::field::{Field, FieldKind};
-use std::collections::{BTreeMap, HashMap};
+use std::collections::BTreeMap;
 
 pub fn reorder_path_map(
     path_map: &BTreeMap<usize, (usize, usize)>,

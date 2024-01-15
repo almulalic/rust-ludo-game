@@ -1,8 +1,12 @@
 use core::fmt;
 
+use serde::{Deserialize, Serialize};
+
 use super::pawn::Pawn;
 
-#[derive(Clone, Copy, Debug, Default, Eq, Hash, PartialEq, PartialOrd, Ord)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, Hash, PartialEq, Serialize, Deserialize, PartialOrd, Ord,
+)]
 pub enum FieldKind {
     #[default]
     Gap,
@@ -21,7 +25,7 @@ pub enum FieldKind {
     YellowSafehouse,
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Serialize, Deserialize, Debug)]
 pub struct Field {
     pub is_visible: bool,
     pub is_hovered: bool,

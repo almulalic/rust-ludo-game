@@ -6,12 +6,17 @@ use crossterm::{
     terminal::{self, EnterAlternateScreen, LeaveAlternateScreen},
 };
 
-use crate::screens::{
-    game_initialization_screen::{
-        screen::GameInitializationScreen, ui::render_game_initialization_screen,
+use crate::{
+    screens::{
+        game_ending_screen::{screen::GameEndingScreen, ui::render_game_ending_screen},
+        game_initialization_screen::{
+            screen::GameInitializationScreen, ui::render_game_initialization_screen,
+        },
+        game_main_screen::screen::GameMainScreen,
+        main_menu::MainMenu,
+        pause_menu::{screen::PauseMenu, ui::render_pause_menu},
     },
-    game_main_screen::screen::GameMainScreen,
-    main_menu::MainMenu,
+    ui::render_game_main_screen,
 };
 
 pub type CrosstermTerminal = ratatui::Terminal<ratatui::backend::CrosstermBackend<std::io::Stderr>>;
@@ -61,6 +66,12 @@ impl Tui {
         Ok(())
     }
 
+    pub fn draw_pause_menu(&mut self, pause_menu: &mut PauseMenu) -> Result<()> {
+        self.terminal
+            .draw(|frame| render_pause_menu(pause_menu, frame))?;
+        Ok(())
+    }
+
     pub fn draw_game_initialization_screen(
         &mut self,
         game_initialization_screen: &mut GameInitializationScreen,
@@ -74,7 +85,17 @@ impl Tui {
     pub fn draw_game_main_screen(&mut self, game_main_screen: &mut GameMainScreen) -> Result<()> {
         let _ = self
             .terminal
-            .draw(|frame| ui::render_game_main_screen(game_main_screen, frame));
+            .draw(|frame| render_game_main_screen(game_main_screen, frame));
+        Ok(())
+    }
+
+    pub fn draw_game_ending_screen(
+        &mut self,
+        game_ending_screen: &mut GameEndingScreen,
+    ) -> Result<()> {
+        let _ = self
+            .terminal
+            .draw(|frame| render_game_ending_screen(game_ending_screen, frame));
         Ok(())
     }
 

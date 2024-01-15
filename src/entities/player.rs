@@ -1,10 +1,11 @@
 use core::fmt;
+use serde::{Deserialize, Serialize};
 
 use crate::entities::pawn::PawnColor;
 
 use super::{field::FieldKind, pawn::Pawn};
 
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Serialize, Deserialize, Copy, Clone)]
 pub struct Player {
     pub id: usize,
     pub order: usize,
@@ -57,7 +58,7 @@ impl Player {
                 home_field_kind = FieldKind::BlueHome;
                 start_field_kind = FieldKind::BlueStart;
                 safehouse_kind = FieldKind::GreenSafehouse;
-                home_pos = [(12, 12), (12, 11), (12, 10), (12, 9)];
+                home_pos = [(11, 11), (11, 12), (12, 11), (12, 12)];
                 safehouse_pos = [(6, 11), (6, 10), (6, 9), (6, 8)];
             }
             PawnColor::YELLOW => {

@@ -1,24 +1,36 @@
 use crate::app::App;
+use crate::{
+    app::CurrentScreen,
+    custom_widgets::button::{Button, ButtonState, BLUE, GREEN, RED},
+};
 use crossterm::event::KeyCode;
-use crossterm::event::{ KeyEvent };
-use crate::{custom_widgets::button::{ Button, ButtonState, BLUE, RED, GREEN }, app::CurrentScreen };
+use crossterm::event::KeyEvent;
 
 pub struct MainMenu<'a> {
     pub buttons: Vec<Button<'a, String>>,
     pub selected_button_id: usize,
-    pub should_quit: bool
+    pub should_quit: bool,
 }
 
 impl<'a> MainMenu<'a> {
     pub fn new() -> MainMenu<'a> {
         MainMenu {
             buttons: vec![
-                Button::new("New Game").value(String::from("NEWGAME")).theme(GREEN).state(ButtonState::Selected),
-                Button::new("Load").value(String::from("LOAD")).theme(BLUE).state(ButtonState::Normal),
-                Button::new("Exit").value(String::from("EXIT")).theme(RED).state(ButtonState::Normal)
+                Button::new("New Game")
+                    .value(String::from("NEWGAME"))
+                    .theme(GREEN)
+                    .state(ButtonState::Selected),
+                Button::new("Load")
+                    .value(String::from("LOAD"))
+                    .theme(BLUE)
+                    .state(ButtonState::Normal),
+                Button::new("Exit")
+                    .value(String::from("EXIT"))
+                    .theme(RED)
+                    .state(ButtonState::Normal),
             ],
             selected_button_id: 0,
-            should_quit: false
+            should_quit: false,
         }
     }
 
@@ -28,9 +40,12 @@ impl<'a> MainMenu<'a> {
 
     pub fn handle_key_event(&mut self, key_event: KeyEvent, app: &mut App) {
         match key_event.code {
-            KeyCode::Char('q') | KeyCode::Esc => self.should_quit = true,
-            KeyCode::Up => self.change_selected_button((self.selected_button_id + self.buttons.len() - 1) % self.buttons.len()),
-            KeyCode::Down => self.change_selected_button((self.selected_button_id + 1) % self.buttons.len()),
+            KeyCode::Up => self.change_selected_button(
+                (self.selected_button_id + self.buttons.len() - 1) % self.buttons.len(),
+            ),
+            KeyCode::Down => {
+                self.change_selected_button((self.selected_button_id + 1) % self.buttons.len())
+            }
             KeyCode::Enter => self.handle_enter_press(app),
             _ => {}
         }
@@ -59,6 +74,4 @@ impl<'a> MainMenu<'a> {
             self.selected_button_id = new_button_id;
         }
     }
-
 }
-

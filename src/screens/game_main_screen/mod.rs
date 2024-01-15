@@ -3,3 +3,4 @@ pub mod event_handler;
 pub mod game;
 pub mod move_type;
 pub mod screen;
+pub mod serialization;

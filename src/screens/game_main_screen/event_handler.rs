@@ -1,6 +1,6 @@
 use crossterm::event::{KeyCode, KeyEvent};
 
-use crate::{debug_log, entities::player::Player, utils::roll_dice};
+use crate::{entities::player::Player, utils::roll_dice};
 
 use super::screen::{GameMainScreen, HoverDir, PlayerAction};
 

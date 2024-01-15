@@ -18,6 +18,7 @@ pub enum BadMoveType {
     Generic,
     UnreachableField,
     CantEatOwnPawn,
+    CantSkipSafehousePawn,
 }
 
 impl fmt::Display for BadMoveType {
@@ -34,6 +35,9 @@ impl fmt::Display for BadMoveType {
             }
             BadMoveType::CantEatOwnPawn => {
                 write!(f, "You can't move to your own pawn's field!")
+            }
+            BadMoveType::CantSkipSafehousePawn => {
+                write!(f, "You can't skip pawns in your safehouse!")
             }
             BadMoveType::Generic => write!(f, "Generic error :( I coded something wrong..."),
         }

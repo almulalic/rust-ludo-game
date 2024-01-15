@@ -1,30 +1,36 @@
 use core::fmt;
-use std::collections::{BTreeMap, HashMap};
+use std::collections::BTreeMap;
 
+use crate::app::App;
 use crate::debug_log;
 use crate::entities::board::extend_safehouses;
 use crate::entities::board::get_path_map;
 use crate::entities::board::initialize_board;
 use crate::entities::board::reorder_path_map;
 use crate::entities::field::Field;
-use crate::entities::field::FieldKind;
 use crate::entities::pawn::Pawn;
+use crate::entities::pawn::PawnColor;
 use crate::entities::player::Player;
 use crate::screens::game_main_screen::current_player::CurrentPlayer;
+use crate::screens::pause_menu::screen::PauseMenu;
+use crate::screens::pause_menu::screen::PauseMenuState;
 use crate::tui::Tui;
 use crossterm::event::KeyCode;
 use crossterm::event::KeyEvent;
+use serde::{Deserialize, Serialize};
 
 use super::event_handler::MainEventHandler;
 use super::move_type::{BadMoveType, GoodMoveType, NoValidMoveType};
+use super::serialization::load_game;
+use super::serialization::save_game;
 
-#[derive(Debug, Copy, PartialEq, Clone)]
+#[derive(Debug, Copy, PartialEq, Serialize, Deserialize, Clone)]
 pub enum GameState {
     RUNNING,
     PAUSED,
 }
 
-#[derive(Debug, Default, Clone, Copy, PartialEq, PartialOrd)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Serialize, Deserialize, PartialOrd)]
 pub enum PlayerAction {
     #[default]
     WaitingRoll,
@@ -67,8 +73,8 @@ pub fn field_diff(num1: usize, num2: usize) -> usize {
     diff as usize % 44
 }
 
-#[derive(Debug)]
-pub struct GameMainScreen {
+#[derive(Serialize, Deserialize)]
+pub struct GameMainScreen<'a> {
     pub players: Vec<Player>,
     pub state: GameState,
     pub curr_player: CurrentPlayer,
@@ -77,19 +83,27 @@ pub struct GameMainScreen {
     pub path_map: BTreeMap<usize, (usize, usize)>,
     pub message: String,
     pub should_normalize_movement: bool,
+    pub playing_colors: Vec<PawnColor>,
+    pub game_winner: Option<Player>,
+
+    #[serde(skip_serializing, skip_deserializing)]
+    pub pause_menu: PauseMenu<'a>,
 }
 
-impl GameMainScreen {
-    pub fn new(players: Vec<Player>) -> GameMainScreen {
+impl<'a> GameMainScreen<'a> {
+    pub fn new(players: Vec<Player>) -> GameMainScreen<'a> {
         let mut game_main_screen = GameMainScreen {
             players: players.clone(),
             curr_player: CurrentPlayer::new(),
-            state: GameState::RUNNING,
+            state: GameState::PAUSED,
             is_game_finished: false,
             board: initialize_board(),
             path_map: get_path_map(),
             message: String::from("Press SPACE to roll the dice!"),
             should_normalize_movement: false,
+            playing_colors: Default::default(),
+            game_winner: None,
+            pause_menu: PauseMenu::new(),
         };
 
         for player in &game_main_screen.players {
@@ -97,6 +111,8 @@ impl GameMainScreen {
                 let (row, col) = *home_positions;
                 game_main_screen.board[row][col].pawn = Some(player.pawns[i].clone());
             }
+
+            game_main_screen.playing_colors.push(player.pawn_color);
         }
 
         game_main_screen.path_map = extend_safehouses(
@@ -154,7 +170,54 @@ impl GameMainScreen {
         }
     }
 
-    pub fn handle_key_event(&mut self, key_event: KeyEvent) {
+    pub fn handle_pause_menu(&mut self, key_event: KeyEvent, app: &mut App) {
+        self.pause_menu.handle_key_event(key_event);
+
+        match self.pause_menu.state {
+            PauseMenuState::Resume => {
+                self.state = GameState::RUNNING;
+            }
+            PauseMenuState::Saved => {
+                match save_game(&self, &self.pause_menu.save_state.save_file_name.clone()) {
+                    Ok(message) => {
+                        debug_log!(format!("Save game successful: {:?} ", message))
+                    }
+                    Err(message) => debug_log!(format!("Save game failed: {:?} ", message)),
+                };
+            }
+            PauseMenuState::Loaded => {
+                match load_game(&self.pause_menu.load_state.load_file_name) {
+                    Ok(loaded_state) => {
+                        self.players = loaded_state.players;
+                        self.curr_player = loaded_state.curr_player;
+                        self.is_game_finished = loaded_state.is_game_finished;
+                        self.board = loaded_state.board;
+                        self.path_map = loaded_state.path_map;
+                        self.message = loaded_state.message;
+                        self.should_normalize_movement = loaded_state.should_normalize_movement;
+                        self.playing_colors = loaded_state.playing_colors;
+                        self.game_winner = loaded_state.game_winner;
+
+                        debug_log!(format!("Load game sucessful"));
+                        self.state = GameState::RUNNING;
+                        self.pause_menu = PauseMenu::new();
+                    }
+                    Err(message) => debug_log!(format!("Save game failed: {:?} ", message)),
+                };
+            }
+            PauseMenuState::Wait | PauseMenuState::Saving | PauseMenuState::Loading => {}
+            PauseMenuState::Exit => {
+                app.should_quit = true;
+            }
+        }
+    }
+
+    pub fn handle_key_event(&mut self, key_event: KeyEvent, app: &mut App) {
+        if self.state == GameState::PAUSED {
+            self.handle_pause_menu(key_event, app);
+            return;
+        }
+
         match key_event.code {
             KeyCode::Esc => {
                 self.state = match self.state {
@@ -174,7 +237,14 @@ impl GameMainScreen {
                 MainEventHandler::handle_roll(self, Some(raw_num));
             }
             KeyCode::Char('e') => {
-                MainEventHandler::handle_roll(self, Some(39));
+                for (si, sj) in self.get_current_player().clone().safehouse_pos.iter().rev() {
+                    if self.board[*si][*sj].pawn.is_none() {
+                        MainEventHandler::handle_roll(
+                            self,
+                            Some(self.flat_from_pos((*si, *sj))).unwrap(),
+                        );
+                    }
+                }
             }
             KeyCode::Char('1'..='4') => {
                 MainEventHandler::handle_pawn_select(self, key_event);
@@ -270,7 +340,7 @@ impl GameMainScreen {
                                     field_diff(new_field_flat, pawn_field_flat)
                                 );
                             }
-                            BadMoveType::WrongStart => {
+                            BadMoveType::WrongStart | BadMoveType::CantSkipSafehousePawn => {
                                 if let Some(selected_pawn_id) = self.curr_player.selected_pawn_id {
                                     self.message = format!(
                                         "{} \n\n Select a new position for pawn {} \n",
@@ -286,7 +356,10 @@ impl GameMainScreen {
                     }
 
                     match self.check_winner() {
-                        Ok(player_id) => panic!("{}", player_id),
+                        Ok(player_id) => {
+                            self.is_game_finished = true;
+                            self.game_winner = Some(self.players[player_id]);
+                        }
                         _ => {}
                     }
                 }
@@ -332,7 +405,7 @@ impl GameMainScreen {
             if player.pawns_on_board == 4 {
                 let mut in_safehouse = 0;
 
-                for (i, j) in player.home_pos {
+                for (i, j) in player.safehouse_pos {
                     if self.board[i][j].pawn.is_some() {
                         in_safehouse += 1;
                     }
@@ -353,13 +426,18 @@ impl GameMainScreen {
             self.curr_player.id, self.curr_player
         ));
 
+        let player: &Player = &self.get_current_player().clone();
+
         self.curr_player.id = (self.curr_player.id + 1) % self.players.len();
         self.message = String::from("Press SPACE to roll!");
         self.curr_player =
             CurrentPlayer::next(&self.curr_player, self.players[self.curr_player.id]);
 
         self.path_map.retain(|&key, _| key < 40);
-        self.path_map = reorder_path_map(&self.path_map, self.players.len());
+        self.path_map = reorder_path_map(
+            &self.path_map,
+            (self.get_current_player().pawn_color - player.pawn_color + 1) as usize % 4,
+        );
         self.path_map = extend_safehouses(&self.path_map, self.get_current_player().safehouse_pos);
 
         self.focus_field(self.players[self.curr_player.id].start_pos);
@@ -427,6 +505,26 @@ impl GameMainScreen {
 
             let pawn_field_flat: usize = self.flat_from_pos(selected_pawn.position).unwrap();
             let new_field_flat: usize = self.flat_from_pos((*nfi, *nfj)).unwrap();
+
+            if selected_new_field.kind == current_player.safehouse_kind {
+                let top_safehouse_pos: Option<(usize, usize)> = current_player
+                    .safehouse_pos
+                    .iter()
+                    .rev()
+                    .find(|x| self.board[x.0][x.1].pawn.is_some())
+                    .copied();
+
+                if top_safehouse_pos.is_none() {
+                    return Ok(GoodMoveType::Move);
+                } else {
+                    let top_safehouse_flat: usize =
+                        self.flat_from_pos(top_safehouse_pos.unwrap()).unwrap();
+
+                    if new_field_flat > top_safehouse_flat {
+                        return Err(BadMoveType::CantSkipSafehousePawn);
+                    }
+                }
+            }
 
             match (field_diff(new_field_flat, pawn_field_flat)) == self.curr_player.roll.unwrap() {
                 true => {
@@ -620,6 +718,9 @@ impl GameMainScreen {
     }
 
     pub fn draw_ui(&mut self, tui: &mut Tui) {
-        let _ = tui.draw_game_main_screen(self);
+        let _ = match self.state {
+            GameState::PAUSED => tui.draw_pause_menu(&mut self.pause_menu),
+            GameState::RUNNING => tui.draw_game_main_screen(self),
+        };
     }
 }
