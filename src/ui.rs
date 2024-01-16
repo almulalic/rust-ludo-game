@@ -3,7 +3,7 @@ use crate::{
         field::{Field, FieldKind},
         pawn::PawnColor,
     },
-    screens::{game_main_screen::screen::GameMainScreen, main_menu::MainMenu},
+    screens::game_main_screen::screen::GameMainScreen,
 };
 use ratatui::{
     layout::{Constraint, Direction, Layout, Rect},
@@ -14,28 +14,6 @@ use ratatui::{
 use std::rc::Rc;
 
 const MAIN_COLOR: Color = Color::Rgb(0, 255, 6);
-
-pub fn render_main_menu(main_menu: &mut MainMenu, frame: &mut Frame) {
-    let area = centered_rect(20, 50, frame.size());
-
-    let layout = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Length(1), // Top Gap
-            Constraint::Length(5), // First Button
-            Constraint::Length(1), // Mid Gap
-            Constraint::Length(5), // Mid Button
-            Constraint::Length(1), // Bottom Gap
-            Constraint::Length(5), // Bottom Button
-            Constraint::Min(0),
-        ])
-        .split(area);
-
-    let button_indexes = [1, 3, 5];
-    for (i, button) in main_menu.buttons.iter().enumerate() {
-        frame.render_widget(button.to_owned(), layout[button_indexes[i]]);
-    }
-}
 
 fn get_rows(layout: Rect) -> Rc<[Rect]> {
     Layout::default()

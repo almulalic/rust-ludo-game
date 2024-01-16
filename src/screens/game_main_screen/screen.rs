@@ -95,7 +95,7 @@ impl<'a> GameMainScreen<'a> {
         let mut game_main_screen = GameMainScreen {
             players: players.clone(),
             curr_player: CurrentPlayer::new(),
-            state: GameState::PAUSED,
+            state: GameState::RUNNING,
             is_game_finished: false,
             board: initialize_board(),
             path_map: get_path_map(),
@@ -248,6 +248,9 @@ impl<'a> GameMainScreen<'a> {
             }
             KeyCode::Char('1'..='4') => {
                 MainEventHandler::handle_pawn_select(self, key_event);
+            }
+            KeyCode::Char('s') => {
+                self.next_player();
             }
             KeyCode::Enter => match self.curr_player.player_action {
                 PlayerAction::Hovering => {

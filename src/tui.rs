@@ -13,7 +13,6 @@ use crate::{
             screen::GameInitializationScreen, ui::render_game_initialization_screen,
         },
         game_main_screen::screen::GameMainScreen,
-        main_menu::MainMenu,
         pause_menu::{screen::PauseMenu, ui::render_pause_menu},
     },
     ui::render_game_main_screen,
@@ -21,7 +20,7 @@ use crate::{
 
 pub type CrosstermTerminal = ratatui::Terminal<ratatui::backend::CrosstermBackend<std::io::Stderr>>;
 
-use crate::{event::EventHandler, ui};
+use crate::event::EventHandler;
 
 /// Representation of a terminal user interface.
 ///
@@ -57,12 +56,6 @@ impl Tui {
 
         self.terminal.hide_cursor()?;
         self.terminal.clear()?;
-        Ok(())
-    }
-
-    pub fn draw_main_menu(&mut self, main_menu: &mut MainMenu) -> Result<()> {
-        self.terminal
-            .draw(|frame| ui::render_main_menu(main_menu, frame))?;
         Ok(())
     }
 

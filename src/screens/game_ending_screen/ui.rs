@@ -25,11 +25,11 @@ pub fn render_game_ending_screen(ges: &mut GameEndingScreen, frame: &mut Frame) 
             "
                 \n
                 GAME WINNER: Player {} - {} \n\n
-                Thank you for playing out implementation of \"Covjece ne ljudi se\" written in rust! \n
+                Thank you for playing our implementation of \"Covjece ne ljudi se\" written in rust! \n
                 The project was written in 2024 as a part of Programming Languages course on International Burch University. \n
                 Made by: Almir Mulalic & Elmin Softic
             ",
-            ges.player.id,
+            ges.player.id + 1,
             ges.player.pawn_color
         )
     );

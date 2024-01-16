@@ -1,6 +1,7 @@
 use super::player_count_state::PlayerCountState;
 use super::player_order_state::{PlayerOrderState, RollState};
 use super::player_pawn_color_state::PlayerPawnColorState;
+use crate::app::App;
 use crate::custom_widgets::button::{Button, ButtonState};
 use crate::entities::pawn::PawnColor;
 use crate::entities::player::Player;
@@ -44,14 +45,10 @@ impl<'a> GameInitializationScreen<'a> {
         return &self.players;
     }
 
-    pub fn handle_key_event(&mut self, key_event: KeyEvent) {
+    pub fn handle_key_event(&mut self, key_event: KeyEvent, app: &mut App) {
         match key_event.code {
-            KeyCode::Esc => {
-                if self.state == GameState::RUNNING {
-                    self.state = GameState::PAUSED;
-                } else {
-                    self.state = GameState::RUNNING;
-                }
+            KeyCode::Esc | KeyCode::Char('q') => {
+                app.should_quit = true;
             }
             KeyCode::Left => match self.step {
                 GameInitializationStep::PlayerNumberSelection => {

@@ -14,7 +14,6 @@ use color_eyre::Result;
 use event::{Event, EventHandler};
 use ratatui::{backend::CrosstermBackend, Terminal};
 use screens::game_screen::GameScreen;
-use screens::main_menu::MainMenu;
 use tui::Tui;
 
 fn main() -> Result<()> {
@@ -28,28 +27,10 @@ fn main() -> Result<()> {
     let mut tui = Tui::new(terminal, events);
     tui.enter()?;
 
-    let mut main_menu: Option<MainMenu> = None;
     let mut game_screen: Option<GameScreen> = None;
 
     while !app.should_quit {
         match app.current_screen {
-            CurrentScreen::MainMenu => match main_menu {
-                Some(ref mut mm) => {
-                    while !mm.should_quit {
-                        let _ = tui.draw_main_menu(mm);
-
-                        match tui.events.next()? {
-                            Event::Key(key_event) => mm.handle_key_event(key_event, &mut app),
-                            _ => {}
-                        }
-                    }
-
-                    main_menu = None;
-                }
-                None => {
-                    main_menu = Some(MainMenu::new());
-                }
-            },
             CurrentScreen::GameScene => match game_screen {
                 Some(ref mut gs) => {
                     while !gs.should_quit {

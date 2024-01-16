@@ -63,7 +63,7 @@ impl MainEventHandler {
                 Ok(_) => {
                     gms.curr_player.player_action = PlayerAction::Selecting;
                     gms.message = format!(
-                        "You rolled a {}!  \n\n Press numbers 1-4 to select your pawn.",
+                        "You rolled a {}!  \n\n Press numbers 1-4 to select your pawn. \n If you don't have a valid move skip with 's'.",
                         roll
                     );
                 }

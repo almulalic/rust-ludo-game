@@ -143,12 +143,12 @@ fn get_color_pallete(color: &PawnColor) -> PawnColorPallet {
             disabled: Color::Rgb(1, 50, 32),
         },
         PawnColor::BLUE => PawnColorPallet {
-            primary: Color::Rgb(255, 255, 0),
+            primary: Color::Rgb(0, 0, 255),
             hovered: Color::Rgb(0, 0, 139),
             disabled: Color::Rgb(0, 0, 139),
         },
         PawnColor::YELLOW => PawnColorPallet {
-            primary: Color::Rgb(0, 0, 255),
+            primary: Color::Rgb(255, 255, 0),
             hovered: Color::Rgb(246, 190, 0),
             disabled: Color::Rgb(246, 190, 0),
         },
@@ -165,11 +165,11 @@ pub struct Pawn {
 }
 
 impl Pawn {
-    pub fn new(id: usize, color: PawnColor, player: usize, position: (usize, usize)) -> Pawn {
+    pub fn new(id: usize, color: PawnColor, player_id: usize, position: (usize, usize)) -> Pawn {
         Pawn {
             id,
             color,
-            player_id: player,
+            player_id,
             color_pallete: get_color_pallete(&color),
             position,
         }
@@ -177,6 +177,7 @@ impl Pawn {
 
     pub fn render(&mut self, field: &Field) -> Paragraph {
         let label: String = get_field(&format!(" {} ", &(self.id + 1).to_string()));
+
         if field.is_hovered {
             return Paragraph::new(label).fg(self.color_pallete.hovered);
         } else {

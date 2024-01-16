@@ -12,10 +12,10 @@
             "hovered": "#8B0000",
             "disabled": "#8B0000"
           },
-          "player_id": 1,
+          "player_id": 0,
           "position": [
-            0,
-            0
+            8,
+            2
           ]
         },
         {
@@ -26,7 +26,7 @@
             "hovered": "#8B0000",
             "disabled": "#8B0000"
           },
-          "player_id": 1,
+          "player_id": 0,
           "position": [
             0,
             1
@@ -40,24 +40,24 @@
             "hovered": "#8B0000",
             "disabled": "#8B0000"
           },
-          "player_id": 1,
+          "player_id": 0,
           "position": [
-            1,
-            0
+            6,
+            2
           ]
         },
         {
           "id": 3,
-          "color": "RED",
+          "color": "GREEN",
           "color_pallete": {
-            "primary": "#FF0000",
-            "hovered": "#8B0000",
-            "disabled": "#8B0000"
+            "primary": "#00FF00",
+            "hovered": "#013220",
+            "disabled": "#013220"
           },
           "player_id": 1,
           "position": [
-            0,
-            8
+            1,
+            12
           ]
         }
       ],
@@ -105,7 +105,221 @@
         4,
         0
       ],
-      "pawns_on_board": 1
+      "pawns_on_board": 2
+    },
+    {
+      "id": 1,
+      "order": 2,
+      "pawns": [
+        {
+          "id": 0,
+          "color": "GREEN",
+          "color_pallete": {
+            "primary": "#00FF00",
+            "hovered": "#013220",
+            "disabled": "#013220"
+          },
+          "player_id": 1,
+          "position": [
+            0,
+            11
+          ]
+        },
+        {
+          "id": 1,
+          "color": "GREEN",
+          "color_pallete": {
+            "primary": "#00FF00",
+            "hovered": "#013220",
+            "disabled": "#013220"
+          },
+          "player_id": 1,
+          "position": [
+            0,
+            12
+          ]
+        },
+        {
+          "id": 2,
+          "color": "GREEN",
+          "color_pallete": {
+            "primary": "#00FF00",
+            "hovered": "#013220",
+            "disabled": "#013220"
+          },
+          "player_id": 1,
+          "position": [
+            1,
+            11
+          ]
+        },
+        {
+          "id": 3,
+          "color": "GREEN",
+          "color_pallete": {
+            "primary": "#00FF00",
+            "hovered": "#013220",
+            "disabled": "#013220"
+          },
+          "player_id": 1,
+          "position": [
+            1,
+            12
+          ]
+        }
+      ],
+      "pawn_color": "GREEN",
+      "home_pos": [
+        [
+          0,
+          11
+        ],
+        [
+          0,
+          12
+        ],
+        [
+          1,
+          11
+        ],
+        [
+          1,
+          12
+        ]
+      ],
+      "safehouse_pos": [
+        [
+          1,
+          6
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          6
+        ]
+      ],
+      "safehouse_kind": "GreenSafehouse",
+      "home_field_kind": "GreenHome",
+      "start_field_kind": "GreenStart",
+      "start_pos": [
+        0,
+        8
+      ],
+      "pawns_on_board": 0
+    },
+    {
+      "id": 2,
+      "order": 3,
+      "pawns": [
+        {
+          "id": 0,
+          "color": "BLUE",
+          "color_pallete": {
+            "primary": "#0000FF",
+            "hovered": "#00008B",
+            "disabled": "#00008B"
+          },
+          "player_id": 2,
+          "position": [
+            11,
+            11
+          ]
+        },
+        {
+          "id": 1,
+          "color": "BLUE",
+          "color_pallete": {
+            "primary": "#0000FF",
+            "hovered": "#00008B",
+            "disabled": "#00008B"
+          },
+          "player_id": 2,
+          "position": [
+            11,
+            12
+          ]
+        },
+        {
+          "id": 2,
+          "color": "BLUE",
+          "color_pallete": {
+            "primary": "#0000FF",
+            "hovered": "#00008B",
+            "disabled": "#00008B"
+          },
+          "player_id": 2,
+          "position": [
+            12,
+            11
+          ]
+        },
+        {
+          "id": 3,
+          "color": "BLUE",
+          "color_pallete": {
+            "primary": "#0000FF",
+            "hovered": "#00008B",
+            "disabled": "#00008B"
+          },
+          "player_id": 2,
+          "position": [
+            12,
+            12
+          ]
+        }
+      ],
+      "pawn_color": "BLUE",
+      "home_pos": [
+        [
+          11,
+          11
+        ],
+        [
+          11,
+          12
+        ],
+        [
+          12,
+          11
+        ],
+        [
+          12,
+          12
+        ]
+      ],
+      "safehouse_pos": [
+        [
+          6,
+          11
+        ],
+        [
+          6,
+          10
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          6,
+          8
+        ]
+      ],
+      "safehouse_kind": "BlueSafehouse",
+      "home_field_kind": "BlueHome",
+      "start_field_kind": "BlueStart",
+      "start_pos": [
+        8,
+        12
+      ],
+      "pawns_on_board": 0
     },
     {
       "id": 3,
@@ -115,11 +329,11 @@
           "id": 0,
           "color": "YELLOW",
           "color_pallete": {
-            "primary": "#0000FF",
+            "primary": "#FFFF00",
             "hovered": "#F6BE00",
             "disabled": "#F6BE00"
           },
-          "player_id": 4,
+          "player_id": 3,
           "position": [
             11,
             0
@@ -129,11 +343,11 @@
           "id": 1,
           "color": "YELLOW",
           "color_pallete": {
-            "primary": "#0000FF",
+            "primary": "#FFFF00",
             "hovered": "#F6BE00",
             "disabled": "#F6BE00"
           },
-          "player_id": 4,
+          "player_id": 3,
           "position": [
             11,
             1
@@ -143,11 +357,11 @@
           "id": 2,
           "color": "YELLOW",
           "color_pallete": {
-            "primary": "#0000FF",
+            "primary": "#FFFF00",
             "hovered": "#F6BE00",
             "disabled": "#F6BE00"
           },
-          "player_id": 4,
+          "player_id": 3,
           "position": [
             12,
             0
@@ -157,11 +371,11 @@
           "id": 3,
           "color": "YELLOW",
           "color_pallete": {
-            "primary": "#0000FF",
+            "primary": "#FFFF00",
             "hovered": "#F6BE00",
             "disabled": "#F6BE00"
           },
-          "player_id": 4,
+          "player_id": 3,
           "position": [
             12,
             1
@@ -205,7 +419,7 @@
           6
         ]
       ],
-      "safehouse_kind": "GreenSafehouse",
+      "safehouse_kind": "YellowSafehouse",
       "home_field_kind": "YellowHome",
       "start_field_kind": "YellowStart",
       "start_pos": [
@@ -219,18 +433,18 @@
   "curr_player": {
     "id": 0,
     "player_action": "Playing",
-    "selected_pawn_id": 3,
-    "prev_hover_flat": 9,
+    "selected_pawn_id": 0,
+    "prev_hover_flat": 35,
     "prev_hover_position": [
-      0,
-      6
+      8,
+      3
     ],
-    "curr_hover_flat": 10,
+    "curr_hover_flat": 36,
     "curr_hover_position": [
-      0,
-      8
+      8,
+      2
     ],
-    "roll": 4
+    "roll": 12
   },
   "is_game_finished": false,
   "board": [
@@ -239,20 +453,7 @@
         "is_visible": true,
         "is_hovered": false,
         "kind": "RedHome",
-        "pawn": {
-          "id": 0,
-          "color": "RED",
-          "color_pallete": {
-            "primary": "#FF0000",
-            "hovered": "#8B0000",
-            "disabled": "#8B0000"
-          },
-          "player_id": 1,
-          "position": [
-            0,
-            0
-          ]
-        },
+        "pawn": null,
         "position": [
           0,
           0
@@ -270,7 +471,7 @@
             "hovered": "#8B0000",
             "disabled": "#8B0000"
           },
-          "player_id": 1,
+          "player_id": 0,
           "position": [
             0,
             1
@@ -345,20 +546,7 @@
         "is_visible": true,
         "is_hovered": false,
         "kind": "GreenStart",
-        "pawn": {
-          "id": 3,
-          "color": "RED",
-          "color_pallete": {
-            "primary": "#FF0000",
-            "hovered": "#8B0000",
-            "disabled": "#8B0000"
-          },
-          "player_id": 1,
-          "position": [
-            0,
-            8
-          ]
-        },
+        "pawn": null,
         "position": [
           0,
           8
@@ -388,7 +576,20 @@
         "is_visible": true,
         "is_hovered": false,
         "kind": "GreenHome",
-        "pawn": null,
+        "pawn": {
+          "id": 0,
+          "color": "GREEN",
+          "color_pallete": {
+            "primary": "#00FF00",
+            "hovered": "#013220",
+            "disabled": "#013220"
+          },
+          "player_id": 1,
+          "position": [
+            0,
+            11
+          ]
+        },
         "position": [
           0,
           11
@@ -398,7 +599,20 @@
         "is_visible": true,
         "is_hovered": false,
         "kind": "GreenHome",
-        "pawn": null,
+        "pawn": {
+          "id": 1,
+          "color": "GREEN",
+          "color_pallete": {
+            "primary": "#00FF00",
+            "hovered": "#013220",
+            "disabled": "#013220"
+          },
+          "player_id": 1,
+          "position": [
+            0,
+            12
+          ]
+        },
         "position": [
           0,
           12
@@ -410,20 +624,7 @@
         "is_visible": true,
         "is_hovered": false,
         "kind": "RedHome",
-        "pawn": {
-          "id": 2,
-          "color": "RED",
-          "color_pallete": {
-            "primary": "#FF0000",
-            "hovered": "#8B0000",
-            "disabled": "#8B0000"
-          },
-          "player_id": 1,
-          "position": [
-            1,
-            0
-          ]
-        },
+        "pawn": null,
         "position": [
           1,
           0
@@ -433,7 +634,20 @@
         "is_visible": true,
         "is_hovered": false,
         "kind": "RedHome",
-        "pawn": null,
+        "pawn": {
+          "id": 3,
+          "color": "RED",
+          "color_pallete": {
+            "primary": "#FF0000",
+            "hovered": "#8B0000",
+            "disabled": "#8B0000"
+          },
+          "player_id": 0,
+          "position": [
+            1,
+            1
+          ]
+        },
         "position": [
           1,
           1
@@ -533,7 +747,20 @@
         "is_visible": true,
         "is_hovered": false,
         "kind": "GreenHome",
-        "pawn": null,
+        "pawn": {
+          "id": 2,
+          "color": "GREEN",
+          "color_pallete": {
+            "primary": "#00FF00",
+            "hovered": "#013220",
+            "disabled": "#013220"
+          },
+          "player_id": 1,
+          "position": [
+            1,
+            11
+          ]
+        },
         "position": [
           1,
           11
@@ -543,7 +770,20 @@
         "is_visible": true,
         "is_hovered": false,
         "kind": "GreenHome",
-        "pawn": null,
+        "pawn": {
+          "id": 3,
+          "color": "GREEN",
+          "color_pallete": {
+            "primary": "#00FF00",
+            "hovered": "#013220",
+            "disabled": "#013220"
+          },
+          "player_id": 1,
+          "position": [
+            1,
+            12
+          ]
+        },
         "position": [
           1,
           12
@@ -1103,7 +1343,20 @@
         "is_visible": true,
         "is_hovered": false,
         "kind": "RedSafehouse",
-        "pawn": null,
+        "pawn": {
+          "id": 2,
+          "color": "RED",
+          "color_pallete": {
+            "primary": "#FF0000",
+            "hovered": "#8B0000",
+            "disabled": "#8B0000"
+          },
+          "player_id": 0,
+          "position": [
+            6,
+            2
+          ]
+        },
         "position": [
           6,
           2
@@ -1367,7 +1620,20 @@
         "is_visible": true,
         "is_hovered": false,
         "kind": "Path",
-        "pawn": null,
+        "pawn": {
+          "id": 0,
+          "color": "RED",
+          "color_pallete": {
+            "primary": "#FF0000",
+            "hovered": "#8B0000",
+            "disabled": "#8B0000"
+          },
+          "player_id": 0,
+          "position": [
+            8,
+            2
+          ]
+        },
         "position": [
           8,
           2
@@ -1747,11 +2013,11 @@
           "id": 0,
           "color": "YELLOW",
           "color_pallete": {
-            "primary": "#0000FF",
+            "primary": "#FFFF00",
             "hovered": "#F6BE00",
             "disabled": "#F6BE00"
           },
-          "player_id": 4,
+          "player_id": 3,
           "position": [
             11,
             0
@@ -1770,11 +2036,11 @@
           "id": 1,
           "color": "YELLOW",
           "color_pallete": {
-            "primary": "#0000FF",
+            "primary": "#FFFF00",
             "hovered": "#F6BE00",
             "disabled": "#F6BE00"
           },
-          "player_id": 4,
+          "player_id": 3,
           "position": [
             11,
             1
@@ -1879,7 +2145,20 @@
         "is_visible": true,
         "is_hovered": false,
         "kind": "BlueHome",
-        "pawn": null,
+        "pawn": {
+          "id": 0,
+          "color": "BLUE",
+          "color_pallete": {
+            "primary": "#0000FF",
+            "hovered": "#00008B",
+            "disabled": "#00008B"
+          },
+          "player_id": 2,
+          "position": [
+            11,
+            11
+          ]
+        },
         "position": [
           11,
           11
@@ -1889,7 +2168,20 @@
         "is_visible": true,
         "is_hovered": false,
         "kind": "BlueHome",
-        "pawn": null,
+        "pawn": {
+          "id": 1,
+          "color": "BLUE",
+          "color_pallete": {
+            "primary": "#0000FF",
+            "hovered": "#00008B",
+            "disabled": "#00008B"
+          },
+          "player_id": 2,
+          "position": [
+            11,
+            12
+          ]
+        },
         "position": [
           11,
           12
@@ -1905,11 +2197,11 @@
           "id": 2,
           "color": "YELLOW",
           "color_pallete": {
-            "primary": "#0000FF",
+            "primary": "#FFFF00",
             "hovered": "#F6BE00",
             "disabled": "#F6BE00"
           },
-          "player_id": 4,
+          "player_id": 3,
           "position": [
             12,
             0
@@ -1928,11 +2220,11 @@
           "id": 3,
           "color": "YELLOW",
           "color_pallete": {
-            "primary": "#0000FF",
+            "primary": "#FFFF00",
             "hovered": "#F6BE00",
             "disabled": "#F6BE00"
           },
-          "player_id": 4,
+          "player_id": 3,
           "position": [
             12,
             1
@@ -2037,7 +2329,20 @@
         "is_visible": true,
         "is_hovered": false,
         "kind": "BlueHome",
-        "pawn": null,
+        "pawn": {
+          "id": 2,
+          "color": "BLUE",
+          "color_pallete": {
+            "primary": "#0000FF",
+            "hovered": "#00008B",
+            "disabled": "#00008B"
+          },
+          "player_id": 2,
+          "position": [
+            12,
+            11
+          ]
+        },
         "position": [
           12,
           11
@@ -2047,7 +2352,20 @@
         "is_visible": true,
         "is_hovered": false,
         "kind": "BlueHome",
-        "pawn": null,
+        "pawn": {
+          "id": 3,
+          "color": "BLUE",
+          "color_pallete": {
+            "primary": "#0000FF",
+            "hovered": "#00008B",
+            "disabled": "#00008B"
+          },
+          "player_id": 2,
+          "position": [
+            12,
+            12
+          ]
+        },
         "position": [
           12,
           12
@@ -2233,10 +2551,12 @@
       4
     ]
   },
-  "message": "Selected pawn 4! \n\n Move to desired location and press ENTER.",
+  "message": "Selected field is unreachable with current roll. \n\n You rolled a 12 but the field is 10 fields away.",
   "should_normalize_movement": false,
   "playing_colors": [
     "RED",
+    "GREEN",
+    "BLUE",
     "YELLOW"
   ],
   "game_winner": null

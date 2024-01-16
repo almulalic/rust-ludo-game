@@ -1,3 +1,9 @@
+HOW TO RUN
+- Install the latest version of rust: https://www.rust-lang.org/tools/install
+- Install cargo: https://doc.rust-lang.org/cargo/commands/cargo-install.html
+- Run: cargo run --bin programming-languages-project
+
+
 Use Ratatui (https://ratatui.rs/introduction/) library and integrate the following functionalities:
   - Add method to draw a main screen (for main menu and board)
   - Add method to draw a overlay/popup screen (for pause and victory screen)

@@ -28,7 +28,7 @@ impl<'a> GameScreen<'a> {
         GameScreen {
             should_quit: false,
             previous_phase: GamePhase::INITIALIZATION,
-            phase: GamePhase::MAIN,
+            phase: GamePhase::INITIALIZATION,
             game_initialization_screen: GameInitializationScreen::new(),
             game_main_screen: None,
             game_ending_screen: None,
@@ -39,7 +39,12 @@ impl<'a> GameScreen<'a> {
         match key_event.code {
             _ => match self.phase {
                 GamePhase::INITIALIZATION => {
-                    self.game_initialization_screen.handle_key_event(key_event);
+                    self.game_initialization_screen
+                        .handle_key_event(key_event, app);
+
+                    if app.should_quit == true {
+                        self.should_quit = true;
+                    }
 
                     if self.game_initialization_screen.is_game_initialized {
                         self.previous_phase = GamePhase::INITIALIZATION;
@@ -70,13 +75,19 @@ impl<'a> GameScreen<'a> {
                     } else {
                         self.game_main_screen = Some(GameMainScreen::new(vec![
                             Player::new(0, 1, PawnColor::RED),
+                            Player::new(1, 2, PawnColor::GREEN),
+                            Player::new(2, 3, PawnColor::BLUE),
                             Player::new(3, 4, PawnColor::YELLOW),
                         ]));
                     }
                 }
                 GamePhase::ENDING => {
                     if let Some(game_ending_screen) = self.game_ending_screen.as_mut() {
-                        game_ending_screen.handle_key_event(key_event);
+                        game_ending_screen.handle_key_event(key_event, app);
+
+                        if app.should_quit == true {
+                            self.should_quit = true;
+                        }
                     } else {
                         self.game_ending_screen =
                             Some(GameEndingScreen::new(Player::new(0, 1, PawnColor::RED)));

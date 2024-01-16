@@ -47,8 +47,8 @@ impl Player {
             }
             PawnColor::GREEN => {
                 start_pos = (0, 8);
-                start_field_kind = FieldKind::GreenHome;
-                home_field_kind = FieldKind::RedHome;
+                home_field_kind = FieldKind::GreenHome;
+                start_field_kind = FieldKind::GreenStart;
                 safehouse_kind = FieldKind::GreenSafehouse;
                 home_pos = [(0, 11), (0, 12), (1, 11), (1, 12)];
                 safehouse_pos = [(1, 6), (2, 6), (3, 6), (4, 6)];
@@ -57,7 +57,7 @@ impl Player {
                 start_pos = (8, 12);
                 home_field_kind = FieldKind::BlueHome;
                 start_field_kind = FieldKind::BlueStart;
-                safehouse_kind = FieldKind::GreenSafehouse;
+                safehouse_kind = FieldKind::BlueSafehouse;
                 home_pos = [(11, 11), (11, 12), (12, 11), (12, 12)];
                 safehouse_pos = [(6, 11), (6, 10), (6, 9), (6, 8)];
             }
@@ -65,14 +65,15 @@ impl Player {
                 start_pos = (12, 4);
                 home_field_kind = FieldKind::YellowHome;
                 start_field_kind = FieldKind::YellowStart;
-                safehouse_kind = FieldKind::GreenSafehouse;
+                safehouse_kind = FieldKind::YellowSafehouse;
                 home_pos = [(11, 0), (11, 1), (12, 0), (12, 1)];
                 safehouse_pos = [(11, 6), (10, 6), (9, 6), (8, 6)];
             }
         }
 
         for (i, pawn) in pawns.iter_mut().enumerate() {
-            *pawn = Pawn::new(i, color, order, home_pos[i]);
+            //*pawn = Pawn::new(i, color, order, home_pos[i]);
+            *pawn = Pawn::new(i, color, id, home_pos[i]);
         }
 
         let player = Player {
